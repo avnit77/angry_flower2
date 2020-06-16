@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <M5StickC.h>
 
 // Replace with your network credentials
 const char* wifi_name = "Science Camp";
@@ -7,6 +8,18 @@ const char* wifi_pass = "supersecret";
 
 // Set web server port number to 80
 WiFiServer server(80);
+
+float accX = 0.0F;
+float accY = 0.0F;
+float accZ = 0.0F;
+
+float gyroX = 0.0F;
+float gyroY = 0.0F;
+float gyroZ = 0.0F;
+
+float pitch = 0.0F;
+float roll  = 0.0F;
+float yaw   = 0.0F;
 
 void setup()
 {
@@ -27,11 +40,23 @@ void setup()
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());         //Getting the IP address at which our webserver will be created
     Serial.println("Put the above IP address into a browser search bar");
-    server.begin();                         //Starting the server
+    M5.begin();
+    M5.IMU.Init();
+    server.begin();  //Starting the server
 }
-
+float temp = 0;
+/*****************************************
+M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
+M5.IMU.getAccelData(&accX,&accY,&accZ);
+M5.IMU.getAhrsData(&pitch,&roll,&yaw);
+M5.IMU.getTempData(&temp);
+*****************************************/
 void loop()
 {
+  M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
+  M5.IMU.getAccelData(&accX,&accY,&accZ);
+  M5.IMU.getAhrsData(&pitch,&roll,&yaw);
+  M5.IMU.getTempData(&temp);
  WiFiClient client = server.available();   //Checking for incoming clients
 
   if (client)
@@ -48,8 +73,10 @@ void loop()
           {
            if (currentLine.length() == 0)      //if line is blank it means its the end of the client HTTP request
            {
-            client.print("<title>ESP32 Webserver</title>");
-            client.print("<body><h1>Hello World </h1>");
+            client.print("gyroX, "+String(gyroX)+", "+"gyroY, "+String(gyroY)+", "+"gyroZ, "+String(gyroZ)+", ");
+            client.print("accX, "+String(accX)+", "+"accY, "+String(accY)+", "+"accZ, "+String(accZ)+", ");
+            client.print("Pitch, "+String(pitch)+", "+"Roll, "+String(roll)+", "+"Yaw, "+String(yaw));
+            client.print('\n');
             break;                            //Going out of the while loop
            }
            else
@@ -64,5 +91,4 @@ void loop()
       }
     }
  }
-    delay(2000);
 }
