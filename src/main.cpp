@@ -2,11 +2,10 @@
 #include <WiFi.h>
 #include <M5StickC.h>
 
-// Replace with your network credentials
+
 const char* wifi_name = "Science Camp";
 const char* wifi_pass = "supersecret";
 
-// Set web server port number to 80
 WiFiServer server(80);
 
 float accX = 0.0F;
@@ -26,23 +25,23 @@ void setup()
     delay(5000);
     Serial.begin(9600);
 
-    // Let's connect to wifi network
+
     Serial.print("Connecting to ");
     Serial.print(wifi_name);
-    WiFi.begin(wifi_name, wifi_pass);       //Connecting to wifi network
+    WiFi.begin(wifi_name, wifi_pass);
 
-    while (WiFi.status() != WL_CONNECTED) { //Waiting for the responce of wifi network
+    while (WiFi.status() != WL_CONNECTED) {
         delay(5000);
         Serial.print(".");
     }
     Serial.println("");
     Serial.println("Connection Successful");
     Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());         //Getting the IP address at which our webserver will be created
+    Serial.println(WiFi.localIP());
     Serial.println("Put the above IP address into a browser search bar");
     M5.begin();
     M5.IMU.Init();
-    server.begin();  //Starting the server
+    server.begin();
 }
 float temp = 0;
 /*****************************************
@@ -77,18 +76,18 @@ void loop()
             client.print("accX, "+String(accX)+", "+"accY, "+String(accY)+", "+"accZ, "+String(accZ)+", ");
             client.print("Pitch, "+String(pitch)+", "+"Roll, "+String(roll)+", "+"Yaw, "+String(yaw));
             client.print('\n');
-            break;                            //Going out of the while loop
+            break;
            }
            else
            {
-            currentLine = "";                //if you got a newline, then clear currentLine
+            currentLine = "";
            }
          }
          else if (c != '\r')
          {
-          currentLine += c;                 //if you got anything else but a carriage return character,
-         }
+          currentLine += c;
       }
     }
  }
 }
+
