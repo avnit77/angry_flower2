@@ -2,7 +2,6 @@
 #include <WiFi.h>
 #include <M5StickC.h>
 
-
 const char* wifi_name = "Science Camp";
 const char* wifi_pass = "supersecret";
 
